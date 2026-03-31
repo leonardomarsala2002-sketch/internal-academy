@@ -51,20 +51,23 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50 p-8">
-        <div class="max-w-5xl mx-auto">
-            <div class="flex items-center justify-between mb-8">
-                <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+    <div class="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full max-w-6xl">
+            <div class="mb-8 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Admin Dashboard</h1>
+                    <p class="mt-1 text-sm text-slate-600">Monitor workshops, registrations and participation trends.</p>
+                </div>
                 <div class="flex items-center gap-2">
                     <a
                         href="/admin/workshops/create"
-                        class="bg-black text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 transition"
+                        class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900/25"
                     >
                         + Create Workshop
                     </a>
                     <button
                         @click="logout"
-                        class="text-sm font-medium px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                        class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/20"
                     >
                         Logout
                     </button>
@@ -72,40 +75,40 @@ onUnmounted(() => {
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                    <p class="text-sm text-gray-500">Total Workshops</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.total_workshops }}</p>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="text-sm text-slate-500">Total Workshops</p>
+                    <p class="mt-1 text-2xl font-bold text-slate-900">{{ stats.total_workshops }}</p>
                 </div>
-                <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                    <p class="text-sm text-gray-500">Confirmed Registrations</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.total_confirmed_registrations }}</p>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="text-sm text-slate-500">Confirmed Registrations</p>
+                    <p class="mt-1 text-2xl font-bold text-slate-900">{{ stats.total_confirmed_registrations }}</p>
                 </div>
-                <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                    <p class="text-sm text-gray-500">Waitlisted Registrations</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.total_waitlisted_registrations }}</p>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="text-sm text-slate-500">Waitlisted Registrations</p>
+                    <p class="mt-1 text-2xl font-bold text-slate-900">{{ stats.total_waitlisted_registrations }}</p>
                 </div>
-                <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                    <p class="text-sm text-gray-500">Most Popular Workshop</p>
-                    <p class="text-sm font-semibold text-gray-900 mt-1">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="text-sm text-slate-500">Most Popular Workshop</p>
+                    <p class="mt-1 text-sm font-semibold text-slate-900">
                         {{ stats.most_popular_workshop?.title ?? 'N/A' }}
                     </p>
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="mt-1 text-xs text-slate-500">
                         {{ stats.most_popular_workshop ? `${stats.most_popular_workshop.confirmed_registrations_count} confirmed` : 'No confirmed registrations yet' }}
                     </p>
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm mb-8 overflow-hidden">
-                <div class="px-5 py-4 border-b border-gray-200">
-                    <h2 class="font-semibold text-gray-900">Registrations Per Workshop</h2>
+            <div class="mb-8 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div class="border-b border-slate-200 px-5 py-4">
+                    <h2 class="font-semibold text-slate-900">Registrations Per Workshop</h2>
                 </div>
 
-                <div v-if="registrationsPerWorkshop.length === 0" class="p-5 text-sm text-gray-500">
+                <div v-if="registrationsPerWorkshop.length === 0" class="p-5 text-sm text-slate-500">
                     No workshop data yet.
                 </div>
 
                 <table v-else class="w-full text-sm">
-                    <thead class="bg-gray-50 text-gray-600">
+                    <thead class="bg-slate-50 text-slate-600">
                         <tr>
                             <th class="text-left px-5 py-3 font-medium">Workshop</th>
                             <th class="text-left px-5 py-3 font-medium">Start</th>
@@ -116,19 +119,19 @@ onUnmounted(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in registrationsPerWorkshop" :key="item.id" class="border-t border-gray-100">
-                            <td class="px-5 py-3 text-gray-900">{{ item.title }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ formatDate(item.starts_at) }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ item.capacity }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ item.confirmed_registrations_count }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ item.waitlisted_registrations_count }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ item.seats_left }}</td>
+                        <tr v-for="item in registrationsPerWorkshop" :key="item.id" class="border-t border-slate-100">
+                            <td class="px-5 py-3 text-slate-900">{{ item.title }}</td>
+                            <td class="px-5 py-3 text-slate-600">{{ formatDate(item.starts_at) }}</td>
+                            <td class="px-5 py-3 text-slate-600">{{ item.capacity }}</td>
+                            <td class="px-5 py-3 text-slate-600">{{ item.confirmed_registrations_count }}</td>
+                            <td class="px-5 py-3 text-slate-600">{{ item.waitlisted_registrations_count }}</td>
+                            <td class="px-5 py-3 text-slate-600">{{ item.seats_left }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div v-if="workshops.length === 0" class="text-center py-16 text-gray-400">
+            <div v-if="workshops.length === 0" class="py-16 text-center text-slate-400">
                 No workshops yet.
             </div>
 
@@ -136,24 +139,24 @@ onUnmounted(() => {
                 <div
                     v-for="w in workshops"
                     :key="w.id"
-                    class="bg-white border border-gray-200 rounded-xl p-5 flex items-center justify-between shadow-sm"
+                    class="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
                 >
                     <div>
-                        <p class="font-semibold text-gray-900">{{ w.title }}</p>
-                        <p class="text-sm text-gray-500 mt-0.5">
+                        <p class="font-semibold text-slate-900">{{ w.title }}</p>
+                        <p class="mt-0.5 text-sm text-slate-500">
                             {{ formatDate(w.starts_at) }} - {{ w.capacity }} seats
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
                         <a
                             :href="`/admin/workshops/${w.id}/edit`"
-                            class="text-sm px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                            class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                         >
                             Edit
                         </a>
                         <button
                             @click="confirmingDelete = w.id"
-                            class="text-sm px-3 py-1.5 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition"
+                            class="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
                         >
                             Delete
                         </button>
@@ -162,20 +165,20 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <div v-if="confirmingDelete" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">Delete workshop?</h2>
-                <p class="text-sm text-gray-500 mb-6">This action cannot be undone.</p>
-                <div class="flex gap-3 justify-end">
+        <div v-if="confirmingDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div class="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                <h2 class="mb-2 text-lg font-semibold text-slate-900">Delete workshop?</h2>
+                <p class="mb-6 text-sm text-slate-500">This action cannot be undone.</p>
+                <div class="flex justify-end gap-3">
                     <button
                         @click="confirmingDelete = null"
-                        class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                        class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                     >
                         Cancel
                     </button>
                     <button
                         @click="deleteWorkshop(confirmingDelete)"
-                        class="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700"
+                        class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700"
                     >
                         Delete
                     </button>

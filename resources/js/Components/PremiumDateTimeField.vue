@@ -388,16 +388,16 @@ watch([dayPart, monthPart, yearPart, timePart], () => {
 
 <template>
     <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">{{ label }}</label>
-        <div class="rounded-xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-3 shadow-sm space-y-3">
-            <p class="text-xs font-semibold tracking-wide text-gray-500">
+        <label class="mb-2 block text-sm font-semibold text-slate-700">{{ label }}</label>
+        <div class="space-y-3 rounded-xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-3.5 shadow-sm">
+            <p class="text-xs font-semibold tracking-wide text-slate-500">
                 {{ selectedWeekday }}
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div class="min-w-0">
-                    <p class="mb-1 text-xs font-medium text-gray-500">Date</p>
-                    <div class="flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus-within:border-black focus-within:ring-2 focus-within:ring-black/10">
+                    <p class="mb-1 text-xs font-semibold text-slate-500">Date</p>
+                    <div class="flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 transition focus-within:border-slate-900 focus-within:ring-2 focus-within:ring-slate-900/15">
                         <input
                             ref="dayInputRef"
                             v-model="dayPart"
@@ -410,9 +410,9 @@ watch([dayPart, monthPart, yearPart, timePart], () => {
                             @paste="handleDateSegmentPaste('day', $event)"
                             @blur="normalizeDayOnBlur"
                             autocomplete="off"
-                            class="w-8 border-0 bg-transparent p-0 text-center shadow-none ring-0 outline-none focus:border-0 focus:ring-0 focus:outline-none"
+                            class="w-8 border-0 bg-transparent p-0 text-center font-medium tabular-nums text-slate-800 shadow-none ring-0 outline-none focus:border-0 focus:ring-0 focus:outline-none"
                         />
-                        <span class="mx-1 text-gray-400">/</span>
+                        <span class="mx-1 text-slate-400">/</span>
                         <input
                             ref="monthInputRef"
                             v-model="monthPart"
@@ -425,9 +425,9 @@ watch([dayPart, monthPart, yearPart, timePart], () => {
                             @paste="handleDateSegmentPaste('month', $event)"
                             @blur="normalizeMonthOnBlur"
                             autocomplete="off"
-                            class="w-8 border-0 bg-transparent p-0 text-center shadow-none ring-0 outline-none focus:border-0 focus:ring-0 focus:outline-none"
+                            class="w-8 border-0 bg-transparent p-0 text-center font-medium tabular-nums text-slate-800 shadow-none ring-0 outline-none focus:border-0 focus:ring-0 focus:outline-none"
                         />
-                        <span class="mx-1 text-gray-400">/</span>
+                        <span class="mx-1 text-slate-400">/</span>
                         <input
                             ref="yearInputRef"
                             v-model="yearPart"
@@ -440,13 +440,13 @@ watch([dayPart, monthPart, yearPart, timePart], () => {
                             @paste="handleDateSegmentPaste('year', $event)"
                             @blur="normalizeYearOnBlur"
                             autocomplete="off"
-                            class="w-14 border-0 bg-transparent p-0 text-center shadow-none ring-0 outline-none focus:border-0 focus:ring-0 focus:outline-none"
+                            class="w-14 border-0 bg-transparent p-0 text-center font-medium tabular-nums text-slate-800 shadow-none ring-0 outline-none focus:border-0 focus:ring-0 focus:outline-none"
                         />
                     </div>
                 </div>
 
                 <div class="min-w-0">
-                    <p class="mb-1 text-xs font-medium text-gray-500">Time</p>
+                    <p class="mb-1 text-xs font-semibold text-slate-500">Time</p>
                     <input
                         v-model="timePart"
                         type="text"
@@ -454,7 +454,7 @@ watch([dayPart, monthPart, yearPart, timePart], () => {
                         placeholder="hh:mm"
                         @input="normalizeTimeInput"
                         @blur="normalizeTimeOnBlur"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-black focus:outline-none focus:ring-2 focus:ring-black/10"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium tabular-nums text-slate-800 transition focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                     />
                 </div>
             </div>
@@ -463,28 +463,28 @@ watch([dayPart, monthPart, yearPart, timePart], () => {
                 <button
                     type="button"
                     @click="setTodayDate"
-                    class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition"
+                    class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                 >
                     Today
                 </button>
                 <button
                     type="button"
                     @click="shiftMinutes(-15)"
-                    class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition"
+                    class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                 >
                     -15m
                 </button>
                 <button
                     type="button"
                     @click="setNowDateTime"
-                    class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition"
+                    class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                 >
                     Now
                 </button>
                 <button
                     type="button"
                     @click="shiftMinutes(15)"
-                    class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition"
+                    class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                 >
                     +15m
                 </button>

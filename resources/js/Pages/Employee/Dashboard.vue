@@ -98,16 +98,16 @@ function formatDate(value) {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50 p-8">
-        <div class="max-w-4xl mx-auto">
-            <div class="mb-8 flex items-start justify-between gap-4">
+    <div class="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full max-w-5xl">
+            <div class="mb-8 flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900">Employee Dashboard</h1>
-                    <p class="text-sm text-gray-500 mt-1">Browse upcoming workshops and manage your registrations.</p>
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Employee Dashboard</h1>
+                    <p class="mt-1 text-sm text-slate-600">Browse upcoming workshops and manage your registrations.</p>
                 </div>
                 <button
                     @click="logout"
-                    class="h-10 px-4 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                    class="h-10 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/20"
                 >
                     Logout
                 </button>
@@ -116,14 +116,14 @@ function formatDate(value) {
             <div class="mb-4 h-16">
                 <div
                     v-if="successToast"
-                    class="h-full rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-sm flex items-center"
+                    class="flex h-full items-center rounded-xl border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-700 shadow-sm"
                 >
                     {{ successToast }}
                 </div>
 
                 <div
                     v-if="errorToast"
-                    class="h-full rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm flex items-center"
+                    class="flex h-full items-center rounded-xl border border-rose-200 bg-rose-50/90 px-4 py-3 text-sm font-medium text-rose-700 shadow-sm"
                 >
                     {{ errorToast }}
                 </div>
@@ -131,34 +131,34 @@ function formatDate(value) {
 
             <div
                 v-if="workshops.length === 0"
-                class="bg-white rounded-2xl border border-gray-200 p-10 text-center text-gray-500"
+                class="rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-500 shadow-sm"
             >
                 No upcoming workshops.
             </div>
 
-            <div v-else class="space-y-4">
+            <div v-else class="space-y-5">
                 <div
                     v-for="workshop in workshops"
                     :key="workshop.id"
-                    class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
+                    class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                 >
-                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                         <div class="min-w-0">
-                            <h2 class="text-xl font-semibold text-gray-900">{{ workshop.title }}</h2>
-                            <p class="text-sm text-gray-600 mt-1">{{ workshop.description }}</p>
+                            <h2 class="text-xl font-semibold text-slate-900">{{ workshop.title }}</h2>
+                            <p class="mt-1 text-sm leading-6 text-slate-600">{{ workshop.description }}</p>
 
-                            <div class="mt-5 space-y-2 text-sm text-gray-600">
-                                <p><span class="font-medium text-gray-800">Start:</span> {{ formatDate(workshop.starts_at) }}</p>
-                                <p><span class="font-medium text-gray-800">End:</span> {{ formatDate(workshop.ends_at) }}</p>
-                                <p><span class="font-medium text-gray-800">Capacity:</span> {{ workshop.capacity }}</p>
-                                <p><span class="font-medium text-gray-800">Seats left:</span> {{ workshop.seats_left }}</p>
-                                <p><span class="font-medium text-gray-800">Status:</span> {{ stateLabel(workshop.state) }}</p>
+                            <div class="mt-5 grid gap-2 text-sm text-slate-700">
+                                <p><span class="font-semibold text-slate-900">Start:</span> {{ formatDate(workshop.starts_at) }}</p>
+                                <p><span class="font-semibold text-slate-900">End:</span> {{ formatDate(workshop.ends_at) }}</p>
+                                <p><span class="font-semibold text-slate-900">Capacity:</span> {{ workshop.capacity }}</p>
+                                <p><span class="font-semibold text-slate-900">Seats left:</span> {{ workshop.seats_left }}</p>
+                                <p><span class="font-semibold text-slate-900">Status:</span> {{ stateLabel(workshop.state) }}</p>
                             </div>
                         </div>
 
-                        <div class="shrink-0 flex flex-col items-stretch gap-2 min-w-[140px]">
+                        <div class="shrink-0 min-w-[148px] space-y-2">
                             <span
-                                class="inline-flex justify-center items-center rounded-full border px-3 py-1 text-xs font-semibold"
+                                class="inline-flex w-full items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold tracking-wide"
                                 :class="stateBadgeClass(workshop.state)"
                             >
                                 {{ stateLabel(workshop.state) }}
@@ -167,7 +167,7 @@ function formatDate(value) {
                             <button
                                 v-if="workshop.state === 'available' || workshop.state === 'full'"
                                 @click="register(workshop.id)"
-                                class="h-10 px-4 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                class="h-10 w-full rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
                             >
                                 {{ workshop.state === 'full' ? 'Join Waitlist' : 'Register' }}
                             </button>
@@ -175,7 +175,7 @@ function formatDate(value) {
                             <button
                                 v-else
                                 @click="cancel(workshop.id)"
-                                class="h-10 px-4 text-sm font-semibold bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                                class="h-10 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                             >
                                 Cancel
                             </button>
