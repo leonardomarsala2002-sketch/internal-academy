@@ -35,6 +35,10 @@ function pollDashboard() {
     })
 }
 
+function logout() {
+    router.post('/logout')
+}
+
 onMounted(() => {
     pollingHandle = setInterval(pollDashboard, 10000)
 })
@@ -51,12 +55,20 @@ onUnmounted(() => {
         <div class="max-w-5xl mx-auto">
             <div class="flex items-center justify-between mb-8">
                 <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                <a
-                    href="/admin/workshops/create"
-                    class="bg-black text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 transition"
-                >
-                    + Create Workshop
-                </a>
+                <div class="flex items-center gap-2">
+                    <a
+                        href="/admin/workshops/create"
+                        class="bg-black text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 transition"
+                    >
+                        + Create Workshop
+                    </a>
+                    <button
+                        @click="logout"
+                        class="text-sm font-medium px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
