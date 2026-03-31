@@ -101,3 +101,16 @@ php artisan test
 - Full workshops add new users to a waiting list.
 - When a confirmed registration is cancelled, the first waitlisted user is promoted automatically (FIFO).
 - Users cannot register (or join a waiting list) for workshops that overlap with another workshop where they are already confirmed.
+
+## Architectural Decisions
+
+- Single source of truth for participation: `registrations` table (confirmed + waitlisted).
+- Business rules centralized in `RegistrationService` (registration, cancellation, FIFO promotion, overlap checks).
+- Admin statistics computed via dedicated `AdminWorkshopStatsService`.
+- Near-real-time admin updates implemented via polling (stable and simple to operate without websocket infrastructure).
+
+## Tradeoffs
+
+- Polling is less real-time than websockets but reduces infrastructure and operational complexity.
+- Reminder command currently sends one email per confirmed registration (not grouped digest emails).
+- Waitlist positions are monotonic and may have gaps after cancellations, while FIFO order remains correct.

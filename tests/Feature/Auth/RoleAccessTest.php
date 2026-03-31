@@ -51,4 +51,29 @@ class RoleAccessTest extends TestCase
 
         $this->get(route('admin.workshops.index'))->assertRedirect(route('dashboard'));
     }
+
+    public function test_user_can_switch_from_admin_to_employee_by_logging_in_again(): void
+    {
+        $this->seed(DemoDataSeeder::class);
+
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password',
+        ])->assertRedirect(route('admin.workshops.index'));
+
+        $response = $this->post('/login', [
+            'email' => 'employee1@example.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect(route('dashboard'));
+        $this->get(route('dashboard'))->assertOk();
+        $this->get(route('admin.workshops.index'))->assertRedirect(route('dashboard'));
+    }
+
+    public function test_guest_is_redirected_to_login_when_accessing_protected_routes(): void
+    {
+        $this->get(route('dashboard'))->assertRedirect(route('login'));
+        $this->get(route('admin.workshops.index'))->assertRedirect(route('login'));
+    }
 }

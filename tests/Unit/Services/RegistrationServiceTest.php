@@ -111,6 +111,53 @@ class RegistrationServiceTest extends TestCase
         ]);
     }
 
+    public function test_cancelling_waitlisted_registration_does_not_promote_next_waitlisted_user(): void
+    {
+        $service = app(RegistrationService::class);
+
+        $confirmedUser = User::factory()->create(['role' => 'employee']);
+        $firstWaitlisted = User::factory()->create(['role' => 'employee']);
+        $secondWaitlisted = User::factory()->create(['role' => 'employee']);
+
+        $workshop = $this->workshop(capacity: 1, startHour: 10, endHour: 12, daysFromNow: 2);
+
+        Registration::create([
+            'user_id' => $confirmedUser->id,
+            'workshop_id' => $workshop->id,
+            'status' => Registration::STATUS_CONFIRMED,
+        ]);
+
+        Registration::create([
+            'user_id' => $firstWaitlisted->id,
+            'workshop_id' => $workshop->id,
+            'status' => Registration::STATUS_WAITLISTED,
+            'waitlist_position' => 1,
+        ]);
+
+        Registration::create([
+            'user_id' => $secondWaitlisted->id,
+            'workshop_id' => $workshop->id,
+            'status' => Registration::STATUS_WAITLISTED,
+            'waitlist_position' => 2,
+        ]);
+
+        $result = $service->cancel($firstWaitlisted, $workshop);
+
+        $this->assertTrue($result['cancelled']);
+        $this->assertArrayNotHasKey('promoted_user_id', $result);
+        $this->assertDatabaseHas('registrations', [
+            'user_id' => $confirmedUser->id,
+            'workshop_id' => $workshop->id,
+            'status' => Registration::STATUS_CONFIRMED,
+        ]);
+        $this->assertDatabaseHas('registrations', [
+            'user_id' => $secondWaitlisted->id,
+            'workshop_id' => $workshop->id,
+            'status' => Registration::STATUS_WAITLISTED,
+            'waitlist_position' => 2,
+        ]);
+    }
+
     private function workshop(int $capacity, int $startHour, int $endHour, int $daysFromNow): Workshop
     {
         return Workshop::create([
