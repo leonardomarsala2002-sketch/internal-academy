@@ -10,7 +10,7 @@ Route::get('/', fn() => redirect()->route('login'));
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('workshops', \App\Http\Controllers\Admin\WorkshopController::class);
+    Route::resource('workshops', \App\Http\Controllers\Admin\WorkshopController::class)->except('show');
 });
 
 // Employee routes
