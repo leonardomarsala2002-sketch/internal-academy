@@ -28,7 +28,7 @@ class WorkshopManagementTest extends TestCase
 
         $response = $this->actingAs($employee)->get(route('admin.workshops.index'));
 
-        $response->assertForbidden();
+        $response->assertRedirect(route('dashboard'));
     }
 
     public function test_admin_cannot_access_employee_dashboard(): void
@@ -37,7 +37,7 @@ class WorkshopManagementTest extends TestCase
 
         $response = $this->actingAs($admin)->get(route('dashboard'));
 
-        $response->assertForbidden();
+        $response->assertRedirect(route('admin.workshops.index'));
     }
 
     public function test_employee_can_register_to_a_workshop_if_seats_are_available(): void

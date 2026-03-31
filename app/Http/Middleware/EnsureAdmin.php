@@ -10,8 +10,12 @@ class EnsureAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || ! $request->user()->isAdmin()) {
+        if (! $request->user()) {
             abort(403, 'Access denied.');
+        }
+
+        if (! $request->user()->isAdmin()) {
+            return redirect()->route('dashboard');
         }
 
         return $next($request);

@@ -49,6 +49,6 @@ class RoleAccessTest extends TestCase
             'password' => 'password',
         ])->assertRedirect(route('dashboard'));
 
-        $this->get(route('admin.workshops.index'))->assertForbidden();
+        $this->get(route('admin.workshops.index'))->assertRedirect(route('dashboard'));
     }
 }
