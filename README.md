@@ -8,6 +8,20 @@ The platform supports two roles:
 
 Registration data is managed through a single source of truth: the `registrations` table.
 
+## Quick Start
+
+```bash
+git clone https://github.com/leonardomarsala2002-sketch/internal-academy.git
+cd internal-academy
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm run dev
+php artisan serve
+```
+
 ## Tech Stack
 
 - Laravel 13
@@ -79,6 +93,9 @@ After running `php artisan migrate --seed`:
 - Employee workshop actions:
   - register: `POST /workshops/{workshop}/register`
   - cancel: `DELETE /workshops/{workshop}/register`
+- Login redirects by role:
+  - `admin` users -> `/admin/workshops`
+  - `employee` users -> `/dashboard`
 
 ## Reminder Command
 
