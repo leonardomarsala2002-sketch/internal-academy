@@ -11,10 +11,10 @@ class EnsureEmployee
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->user()) {
-            abort(403, 'Access denied.');
+            return redirect()->route('login');
         }
 
-        if (! $request->user()->isEmployee()) {
+        if ($request->user()->isAdmin()) {
             return redirect()->route('admin.workshops.index');
         }
 
