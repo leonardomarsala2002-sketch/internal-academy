@@ -6,7 +6,7 @@ const form = useForm({
     description: '',
     starts_at: '',
     ends_at: '',
-    capacity: ''
+    capacity: 1,
 })
 
 function submit() {
@@ -15,83 +15,73 @@ function submit() {
 </script>
 
 <template>
-    <div style="padding: 40px; max-width: 500px; margin: 0 auto;">
-        <h1 style="margin-bottom: 20px;">Create Workshop</h1>
+    <div class="min-h-screen bg-gray-50 p-8">
+        <div class="max-w-2xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Create Workshop</h1>
 
-        <form @submit.prevent="submit">
-
-            <!-- TITLE -->
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px;">
-                    Title
-                </label>
-
-                <input
-                    v-model="form.title"
-                    placeholder="Workshop title"
-                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"
-                />
-
-                <div v-if="form.errors.title" style="color: red; margin-top: 5px;">
-                    {{ form.errors.title }}
+            <form @submit.prevent="submit" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input
+                        v-model="form.title"
+                        type="text"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                    <p v-if="form.errors.title" class="text-red-500 text-xs mt-1">{{ form.errors.title }}</p>
                 </div>
-            </div>
 
-            <!-- DESCRIPTION -->
-            <div style="margin-bottom: 20px;">
-                <label>Description</label>
-
-                <textarea
-                    v-model="form.description"
-                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"
-                ></textarea>
-
-                <div v-if="form.errors.description" style="color: red;">
-                    {{ form.errors.description }}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                        v-model="form.description"
+                        rows="4"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                    <p v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</p>
                 </div>
-            </div>
 
-            <!-- START DATE -->
-            <div style="margin-bottom: 20px;">
-                <label>Start Date</label>
-
-                <input type="date" v-model="form.starts_at" />
-
-                <div v-if="form.errors.starts_at" style="color: red;">
-                    {{ form.errors.starts_at }}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Starts At</label>
+                        <input
+                            v-model="form.starts_at"
+                            type="datetime-local"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                        />
+                        <p v-if="form.errors.starts_at" class="text-red-500 text-xs mt-1">{{ form.errors.starts_at }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ends At</label>
+                        <input
+                            v-model="form.ends_at"
+                            type="datetime-local"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                        />
+                        <p v-if="form.errors.ends_at" class="text-red-500 text-xs mt-1">{{ form.errors.ends_at }}</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- END DATE -->
-            <div style="margin-bottom: 20px;">
-                <label>End Date</label>
-
-                <input type="date" v-model="form.ends_at" />
-
-                <div v-if="form.errors.ends_at" style="color: red;">
-                    {{ form.errors.ends_at }}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
+                    <input
+                        v-model="form.capacity"
+                        type="number"
+                        min="1"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                    <p v-if="form.errors.capacity" class="text-red-500 text-xs mt-1">{{ form.errors.capacity }}</p>
                 </div>
-            </div>
 
-            <!-- CAPACITY -->
-            <div style="margin-bottom: 20px;">
-                <label>Capacity</label>
-
-                <input type="number" v-model="form.capacity" />
-
-                <div v-if="form.errors.capacity" style="color: red;">
-                    {{ form.errors.capacity }}
+                <div class="flex justify-end">
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="bg-black text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 transition"
+                    >
+                        {{ form.processing ? 'Saving...' : 'Create Workshop' }}
+                    </button>
                 </div>
-            </div>
-
-            <!-- BUTTON -->
-            <button
-                type="submit"
-                style="padding: 10px 15px; background: black; color: white; border: none; border-radius: 6px; cursor: pointer;"
-            >
-                Save
-            </button>
-
-        </form>
+            </form>
+        </div>
     </div>
 </template>

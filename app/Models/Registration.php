@@ -10,10 +10,20 @@ class Registration extends Model
 {
     use HasFactory;
 
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_WAITLISTED = 'waitlisted';
+
     protected $fillable = [
         'user_id',
         'workshop_id',
         'status',
+        'waitlist_position',
+    ];
+
+    protected $casts = [
+        'user_id' => 'integer',
+        'workshop_id' => 'integer',
+        'waitlist_position' => 'integer',
     ];
 
     public function user(): BelongsTo

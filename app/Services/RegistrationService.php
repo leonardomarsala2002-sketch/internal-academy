@@ -11,75 +11,118 @@ class RegistrationService
 {
     public function register(User $user, Workshop $workshop): array
     {
-        // Già iscritto?
-        if ($workshop->registrations()->where('user_id', $user->id)->exists()) {
-            return ['error' => 'You are already registered for this workshop.'];
-        }
+        return DB::transaction(function () use ($user, $workshop): array {
+            $lockedWorkshop = Workshop::query()
+                ->whereKey($workshop->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        // Controllo overlap (No Ubiquity)
-        $overlap = Registration::where('user_id', $user->id)
-            ->where('status', 'confirmed')
-            ->whereHas('workshop', function ($q) use ($workshop) {
-                $q->where('starts_at', '<', $workshop->ends_at)
-                  ->where('ends_at', '>', $workshop->starts_at);
-            })->exists();
+            $alreadyRegistered = Registration::query()
+                ->where('user_id', $user->id)
+                ->where('workshop_id', $lockedWorkshop->id)
+                ->exists();
 
-        if ($overlap) {
-            return ['error' => 'You already have a workshop at this time.'];
-        }
+            if ($alreadyRegistered) {
+                return ['error' => 'You are already registered for this workshop.'];
+            }
 
-        // Workshop pieno → waitlist
-        if ($workshop->isFull()) {
-            $position = ($workshop->waitlistedRegistrations()->max('waitlist_position') ?? 0) + 1;
+            if ($this->hasConfirmedOverlap($user, $lockedWorkshop)) {
+                return ['error' => 'You are already confirmed for an overlapping workshop.'];
+            }
+
+            $confirmedCount = Registration::query()
+                ->where('workshop_id', $lockedWorkshop->id)
+                ->where('status', Registration::STATUS_CONFIRMED)
+                ->lockForUpdate()
+                ->count();
+
+            if ($confirmedCount < $lockedWorkshop->capacity) {
+                Registration::create([
+                    'user_id' => $user->id,
+                    'workshop_id' => $lockedWorkshop->id,
+                    'status' => Registration::STATUS_CONFIRMED,
+                ]);
+
+                return ['status' => Registration::STATUS_CONFIRMED];
+            }
+
+            $nextWaitlistPosition = ((int) Registration::query()
+                ->where('workshop_id', $lockedWorkshop->id)
+                ->where('status', Registration::STATUS_WAITLISTED)
+                ->lockForUpdate()
+                ->max('waitlist_position')) + 1;
 
             Registration::create([
-                'user_id'           => $user->id,
-                'workshop_id'       => $workshop->id,
-                'status'            => 'waitlisted',
-                'waitlist_position' => $position,
+                'user_id' => $user->id,
+                'workshop_id' => $lockedWorkshop->id,
+                'status' => Registration::STATUS_WAITLISTED,
+                'waitlist_position' => $nextWaitlistPosition,
             ]);
 
-            return ['waitlisted' => true];
-        }
-
-        // Posti disponibili → confermato
-        Registration::create([
-            'user_id'     => $user->id,
-            'workshop_id' => $workshop->id,
-            'status'      => 'confirmed',
-        ]);
-
-        return ['confirmed' => true];
+            return [
+                'status' => Registration::STATUS_WAITLISTED,
+                'waitlist_position' => $nextWaitlistPosition,
+            ];
+        });
     }
 
     public function cancel(User $user, Workshop $workshop): array
     {
-        $registration = Registration::where('user_id', $user->id)
-            ->where('workshop_id', $workshop->id)
-            ->first();
+        return DB::transaction(function () use ($user, $workshop): array {
+            $lockedWorkshop = Workshop::query()
+                ->whereKey($workshop->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        if (! $registration) {
-            return ['error' => 'Registration not found.'];
-        }
+            $registration = Registration::query()
+                ->where('user_id', $user->id)
+                ->where('workshop_id', $lockedWorkshop->id)
+                ->lockForUpdate()
+                ->first();
 
-        DB::transaction(function () use ($registration, $workshop) {
-            $wasConfirmed = $registration->status === 'confirmed';
+            if (! $registration) {
+                return ['error' => 'Registration not found.'];
+            }
+
+            $wasConfirmed = $registration->status === Registration::STATUS_CONFIRMED;
             $registration->delete();
 
-            if ($wasConfirmed) {
-                $next = $workshop->waitlistedRegistrations()
-                    ->lockForUpdate()
-                    ->first();
-
-                if ($next) {
-                    $next->update([
-                        'status'            => 'confirmed',
-                        'waitlist_position' => null,
-                    ]);
-                }
+            if (! $wasConfirmed) {
+                return ['cancelled' => true];
             }
-        });
 
-        return ['cancelled' => true];
+            $nextWaitlistedRegistration = Registration::query()
+                ->where('workshop_id', $lockedWorkshop->id)
+                ->where('status', Registration::STATUS_WAITLISTED)
+                ->orderBy('waitlist_position')
+                ->lockForUpdate()
+                ->first();
+
+            if ($nextWaitlistedRegistration) {
+                $nextWaitlistedRegistration->update([
+                    'status' => Registration::STATUS_CONFIRMED,
+                    'waitlist_position' => null,
+                ]);
+
+                return [
+                    'cancelled' => true,
+                    'promoted_user_id' => $nextWaitlistedRegistration->user_id,
+                ];
+            }
+
+            return ['cancelled' => true];
+        });
+    }
+
+    private function hasConfirmedOverlap(User $user, Workshop $targetWorkshop): bool
+    {
+        return Registration::query()
+            ->where('user_id', $user->id)
+            ->where('status', Registration::STATUS_CONFIRMED)
+            ->whereHas('workshop', function ($query) use ($targetWorkshop): void {
+                $query->where('starts_at', '<', $targetWorkshop->ends_at)
+                    ->where('ends_at', '>', $targetWorkshop->starts_at);
+            })
+            ->exists();
     }
 }

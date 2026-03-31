@@ -10,7 +10,7 @@ class EnsureEmployee
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()) {
+        if (! $request->user() || ! $request->user()->isEmployee()) {
             abort(403, 'Access denied.');
         }
 

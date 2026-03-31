@@ -30,24 +30,35 @@ class Workshop extends Model
     public function confirmedRegistrations(): HasMany
     {
         return $this->hasMany(Registration::class)
-            ->where('status', 'confirmed');
+            ->where('status', Registration::STATUS_CONFIRMED);
     }
-
-public function users(): BelongsToMany
-{
-    return $this->belongsToMany(User::class, 'workshop_user');
-}
 
     public function waitlistedRegistrations(): HasMany
     {
         return $this->hasMany(Registration::class)
-            ->where('status', 'waitlisted')
+            ->where('status', Registration::STATUS_WAITLISTED)
             ->orderBy('waitlist_position');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'registrations')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
+    public function confirmedRegistrationsCount(): int
+    {
+        if (isset($this->confirmed_registrations_count)) {
+            return (int) $this->confirmed_registrations_count;
+        }
+
+        return $this->confirmedRegistrations()->count();
     }
 
     public function availableSeats(): int
     {
-        return $this->capacity - $this->confirmedRegistrations()->count();
+        return max(0, $this->capacity - $this->confirmedRegistrationsCount());
     }
 
     public function isFull(): bool
